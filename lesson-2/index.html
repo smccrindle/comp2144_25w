@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 2 - Import Model | COMP2144</title>
+    <style>
+        /* STEP 1: Have a look at some of the interesting CSS used to make sure the entire browser window object is used for the purpose of the Babylon.js Web app */
+        html,
+        body {
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }  
+        #renderCanvas {
+            width: 100%;
+            height: 100%;
+            touch-action: none;
+        }
+    </style>
+    <!-- STEP 2: Examine the JavaScript dependencies served up from a CDN - which is fine for development -->  
+    <script src="https://cdn.babylonjs.com/babylon.js"></script>
+    <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+    <!-- The below script tag is used to include PEP.js (Performance Evaluation Profiler) - a JavaScript library that helps you measure the performance of your web application (credit Gemini 1.5). -->
+    <script src="https://code.jquery.com/pep/0.4.3/pep.js"></script>
+</head>
+<body>
+    <!-- STEP 3: Create a canvas element with an id, and set the touch-action attribute to "none" -->
+    
+    <!-- touch-action="none" for best results from PEP -->
+ 
+    <script>
+        // STEP 4: Get the canvas element as a const
+        
+        // STEP 5: Create the BABYON 3D engine, and attach it to the canvas
+        
+        // STEP 6: Build the createScene function
+        
+            // STEP 8a: Create a new BABYLON scene, passing in the engine as an argument
+            
+            const box = BABYLON.MeshBuilder.CreateBox("box", {}); // Create box mesh object
+ 
+            const camera = new BABYLON.ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 2.5, 15, new BABYLON.Vector3(0, 0, 0)); // Add Arc Rotate Camera
+            camera.attachControl(canvas, true); // Attach camera control to the canvas
+            // Replace the above camera with the below XR if you have a headset
+            // const xr = scene.createDefaultXRExperienceAsync();
+ 
+            const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(1, 1, 0));
+            // STEP 8b: Return the scene
+            
+        // STEP 7: Call the createScene function
+         
+        // STEP 8: Use the runRenderLoop() method to render the scene repeatedly
+        
+        // STEP 9: Add an event listener that adapts to the user resizing the screen
+        
+        // STEP 10: Move the page up to a server (maybe GitHub Pages) and try it out!
+    </script>
+</body>
+</html>
