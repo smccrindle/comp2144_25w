@@ -113,7 +113,12 @@ const createScene = async function() {
     // STEP 15b: Unzip the archive, then look at all the file formats - we will use the popular .obj file format and attempt to convert it to a .glb file using Convert3D (https://convert3d.org/)
     // STEP 15c: Note that the colour and material information has been dumped - let's try the .dae file (Collada - an open source XML 3D model format) - download the .glb file to a /media folder locally
     // STEP 15d: Drop the tree into the scene using the ImportMeshAsync method (note that the tree is very, very tiny)
-
+    const tree = BABYLON.SceneLoader.ImportMeshAsync("", "./meshes/", "Lowpoly_tree_sample.glb").then((result) => {
+        result.meshes[0].position.x = -2.5;
+        result.meshes[0].position.y = 0;
+        result.meshes[0].position.z = -2.5;
+        result.meshes[0].scaling = new BABYLON.Vector3(150, 150, 150);
+    });
     
     // STEP 16a: Scale the mesh object x, y, and z by 150 times
     // STEP 16b: Move it over a bit with -2 for the x position
