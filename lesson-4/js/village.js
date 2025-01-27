@@ -125,10 +125,14 @@ const createScene = async function() {
 
     // STEP 17a: Set the above createScene() function to async (important, or this will not work)
     // STEP 17b: Create the xrHelper to allow the visitor to choose WebXR if they are able and they'd like
-    // const xr = await scene.createDefaultXRExperienceAsync({
-    //     floorMeshes: [ground],
-    //     optionalFeatures: true
-    // });
+    if (BABYLON.WebXRSessionManager.IsSessionSupportedAsync("immersive-vr")) {
+        const xr = await scene.createDefaultXRExperienceAsync({
+            floorMeshes: [ground],
+            optionalFeatures: true
+        });
+    } else {
+        console.log("WebXR is not supported on this device.");
+    }
 
     // Return the scene
     return scene;
