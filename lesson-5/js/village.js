@@ -135,7 +135,7 @@ const createScene = async function() {
     car.position.y = 0.6;
 
     // STEP 8: Create a new animation object
-    
+    // START here Feb. 10, 2025!!!
 
     // STEP 9a: Create an array for keyframes
      
