@@ -13,7 +13,7 @@ const createScene = async function() {
     // Add a camera and allow it to control the canvas
     const camera = new BABYLON.ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 2.5, 15, new BABYLON.Vector3(0, 0, 0));
     // STEP 11: Restrict camera from going below the ground
-    
+    camera.upperBetaLimit = Math.PI / 2 - 0.05;
     camera.attachControl(canvas, true);
 
     /* LIGHTING
@@ -238,14 +238,14 @@ const createScene = async function() {
     ---------------------------------------------------------------------------------------------------- */
     // STEP 12: Enable the WebXR experience, and walk around your scene using the provided VR headset
     // Check to see if WebXR (immersive-vr, specifically) is supported on this device
-    // if (BABYLON.WebXRSessionManager.IsSessionSupportedAsync("immersive-vr")) {
-    //     const xr = await scene.createDefaultXRExperienceAsync({
-    //         floorMeshes: [largeGround],
-    //         optionalFeatures: true
-    //     });
-    // } else {
-    //     console.log("WebXR is not supported on this device.");
-    // };
+    if (BABYLON.WebXRSessionManager.IsSessionSupportedAsync("immersive-vr")) {
+        const xr = await scene.createDefaultXRExperienceAsync({
+            floorMeshes: [largeGround],
+            optionalFeatures: true
+        });
+    } else {
+        console.log("WebXR is not supported on this device.");
+    };
 
     // Return the scene
     return scene;
