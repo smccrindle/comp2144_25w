@@ -47,7 +47,8 @@ const createScene = async function() {
     // STEP 6b: Create large ground texture material using Babylon.js library (https://assets.babylonjs.com/environments/valleygrass.png)
     const largeGroundMat = new BABYLON.StandardMaterial("largeGroundMat");
     largeGroundMat.diffuseTexture = new BABYLON.Texture("https://assets.babylonjs.com/environments/valleygrass.png");
-    
+    // Make the ground non-shiny
+    largeGroundMat.specularColor = new BABYLON.Color3(0, 0, 0);
     // STEP 6c: Build a 3D ground surface based on a heightmap (https://assets.babylonjs.com/environments/villageheightmap.png)
     const largeGround = BABYLON.MeshBuilder.CreateGroundFromHeightMap("largeGround", "https://assets.babylonjs.com/environments/villageheightmap.png", {width: 150, height: 150, subdivisions: 20, minHeight: 0, maxHeight: 20});
     // STEP 6d: Set the largeGround material property to be the largeGroundMat we created above
@@ -104,6 +105,8 @@ const createScene = async function() {
     roof.position = new BABYLON.Vector3(1, 2, 2);
     const roofMat = new BABYLON.StandardMaterial("roofMat");
     roofMat.diffuseTexture = new BABYLON.Texture("https://assets.babylonjs.com/environments/roof.jpg");
+    // Make the roof non-shiny
+    roofMat.specularColor = new BABYLON.Color3(0, 0, 0);
     roof.material = roofMat;
 
     // Combine the box and the roof meshes into one mesh. Note the MergeMeshes method below includes arguments to allow multiple materials within the same mesh
@@ -238,14 +241,14 @@ const createScene = async function() {
     ---------------------------------------------------------------------------------------------------- */
     // STEP 12: Enable the WebXR experience, and walk around your scene using the provided VR headset
     // Check to see if WebXR (immersive-vr, specifically) is supported on this device
-    if (BABYLON.WebXRSessionManager.IsSessionSupportedAsync("immersive-vr")) {
-        const xr = await scene.createDefaultXRExperienceAsync({
-            floorMeshes: [largeGround],
-            optionalFeatures: true
-        });
-    } else {
-        console.log("WebXR is not supported on this device.");
-    };
+    // if (BABYLON.WebXRSessionManager.IsSessionSupportedAsync("immersive-vr")) {
+    //     const xr = await scene.createDefaultXRExperienceAsync({
+    //         floorMeshes: [largeGround],
+    //         optionalFeatures: true
+    //     });
+    // } else {
+    //     console.log("WebXR is not supported on this device.");
+    // };
 
     // Return the scene
     return scene;
