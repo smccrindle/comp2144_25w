@@ -23,14 +23,14 @@ const createScene = async function() {
     light1.intensity = 0.6;
 
     // STEP 8a: Let's create some shadows...create a new DirectionalLight
-    
+    const light2 = new BABYLON.DirectionalLight("directional", new BABYLON.Vector3(0, -1, 1), scene);
     // STEP 8b: Position the light
-    
+    light2.position = new BABYLON.Vector3(0, 50, -100);
     // STEP 8c: Create a ShadowGenerator object, and attach it to the light
-    
+    const shadowGenerator = new BABYLON.ShadowGenerator(1024, light2);
 
     // STEP 10: Soften the edges of the shadows a bit
-    
+    shadowGenerator.usePoissonSampling = true;
 
 
     /* GROUND
@@ -54,20 +54,24 @@ const createScene = async function() {
     largeGround.material = largeGroundMat;
     
     // STEP 8d: Instruct the ground mesh to receive shadows
-    
+    largeGround.receiveShadows = true;
 
 
     /* SKY
     ---------------------------------------------------------------------------------------------------- */
     // STEP 7a: Add a skybox (see https://playground.babylonjs.com/#UU7RQ#91 to visualize how this works)
-    
+    const skybox = BABYLON.MeshBuilder.CreateBox("skybox", {size: 150}, scene);
     // STEP 7b: Apply the 6 images onto the skybox cube (look at the /textures/ directory)
-    
+    const skyboxMaterial = new BABYLON.StandardMaterial("skybox", scene);
+    skyboxMaterial.backFaceCulling = false;
+    skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("./textures/skybox", scene);
     // Thanks to Chad Wolfe's skybox bitmaps at https://opengameart.org/content/sky-box-sunny-day
     // STEP 7c: Make the skybox non-reflective
-    
+    skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
+    skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
+    skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
     // STEP 7d: Set the skybox material property
-    
+    skybox.material = skyboxMaterial;
 
 
     /* HOUSES
@@ -105,21 +109,24 @@ const createScene = async function() {
     // Combine the box and the roof meshes into one mesh. Note the MergeMeshes method below includes arguments to allow multiple materials within the same mesh
     const house1 = BABYLON.Mesh.MergeMeshes([box, roof], true, false, null, false, true);
     // STEP 9e: Notice the tree is not casting a shadow on the house? Set each of the three houses to cast and recieve shadows, too
-    
+    shadowGenerator.addShadowCaster(house1, true);
+    house1.receiveShadows = true;
 
     // HOUSE 2
     let house2 = house1.createInstance("house2");
     house2.position = new BABYLON.Vector3(0, 0, -4);
     house2.rotation.y = BABYLON.Tools.ToRadians(45);
     // STEP 9f: Set house2 to cast and receive shadows
-    
+    shadowGenerator.addShadowCaster(house2, true);
+    house2.receiveShadows = true;
 
     // HOUSE 3
     let house3 = house1.createInstance("house3");
     house3.position = new BABYLON.Vector3(-3, 0, 1.0);
     house3.rotation.y = BABYLON.Tools.ToRadians(-45);
     // STEP 9g: Set house3 to cast and receive shadows
-    
+    shadowGenerator.addShadowCaster(house3, true);
+    house3.receiveShadows = true;
 
 
     /* SOUNDS
@@ -141,7 +148,8 @@ const createScene = async function() {
         // Scale up the tree - it is way too small
         treeMesh.scaling = new BABYLON.Vector3(150, 150, 150);
         // STEP 9a: Set the tree mesh to cast a shadow (true means apply to child meshes as well), and also to receive shadows
-        
+        shadowGenerator.addShadowCaster(treeMesh, true);
+        treeMesh.receiveShadows = true;
     });
 
 
@@ -153,8 +161,8 @@ const createScene = async function() {
     carMat.diffuseColor = new BABYLON.Color3(1, 0, 1);
     car.material = carMat;
     // STEP 9b: Add a shadow to the car, and set it to receive shadows cast upon it
-    
-
+    shadowGenerator.addShadowCaster(car, true);
+    car.receiveShadows = true;
     // Move car up 0.5 so that it sits on the ground
     car.position = new BABYLON.Vector3(1, 0.5, -0.75);
     // Move it out of the way so that the 0,0,0 point in the scene is visible for the next mesh we will import
@@ -168,7 +176,8 @@ const createScene = async function() {
         wheelMesh.parent = car;
         wheelMesh.position = new BABYLON.Vector3(0, -0.4, -0.6);
         // STEP 9c: Add a shadow to the wheel, and enable receiveShadows
-        
+        shadowGenerator.addShadowCaster(wheelMesh, true);
+        wheelMesh.receiveShadows = true;
     }).catch((error) => {
         console.log("Error loading mesh: " + error);
         return null;
@@ -183,7 +192,8 @@ const createScene = async function() {
         wheelMesh.parent = car;
         wheelMesh.position = new BABYLON.Vector3(0, -0.4, 0.6);
         // STEP 9d: Add a shadow to the wheel, and enable receiveShadows
-        
+        shadowGenerator.addShadowCaster(wheelMesh, true);
+        wheelMesh.receiveShadows = true;
     }).catch((error) => {
         console.log("Error loading mesh: " + error);
         return null;
