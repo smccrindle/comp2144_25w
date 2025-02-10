@@ -36,20 +36,22 @@ const createScene = async function() {
     /* GROUND
     ---------------------------------------------------------------------------------------------------- */
     // STEP 6a: Comment out the below code for the simple square ground
-    const ground = BABYLON.MeshBuilder.CreateGround("ground", {
-        width: 10,
-        height: 10
-    });
-    const groundMat = new BABYLON.StandardMaterial("groundMat");
-    groundMat.diffuseColor = new BABYLON.Color3(0.33, 0.42, 0.18);
-    ground.material = groundMat;
+    // const ground = BABYLON.MeshBuilder.CreateGround("ground", {
+    //     width: 10,
+    //     height: 10
+    // });
+    // const groundMat = new BABYLON.StandardMaterial("groundMat");
+    // groundMat.diffuseColor = new BABYLON.Color3(0.33, 0.42, 0.18);
+    // ground.material = groundMat;
 
     // STEP 6b: Create large ground texture material using Babylon.js library (https://assets.babylonjs.com/environments/valleygrass.png)
+    const largeGroundMat = new BABYLON.StandardMaterial("largeGroundMat");
+    largeGroundMat.diffuseTexture = new BABYLON.Texture("https://assets.babylonjs.com/environments/valleygrass.png");
     
     // STEP 6c: Build a 3D ground surface based on a heightmap (https://assets.babylonjs.com/environments/villageheightmap.png)
-    
+    const largeGround = BABYLON.MeshBuilder.CreateGroundFromHeightMap("largeGround", "https://assets.babylonjs.com/environments/villageheightmap.png", {width: 150, height: 150, subdivisions: 20, minHeight: 0, maxHeight: 20});
     // STEP 6d: Set the largeGround material property to be the largeGroundMat we created above
-    
+    largeGround.material = largeGroundMat;
     
     // STEP 8d: Instruct the ground mesh to receive shadows
     
