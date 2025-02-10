@@ -243,7 +243,7 @@ const createScene = async function() {
     // Check to see if WebXR (immersive-vr, specifically) is supported on this device
     if (BABYLON.WebXRSessionManager.IsSessionSupportedAsync("immersive-vr")) {
         const xr = await scene.createDefaultXRExperienceAsync({
-            floorMeshes: [ground],
+            floorMeshes: [largeGround],
             optionalFeatures: true
         });
     } else {
