@@ -13,8 +13,7 @@ const createScene = async function() {
     // Add a camera and allow it to control the canvas
     const camera = new BABYLON.ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 2.5, 15, new BABYLON.Vector3(0, 0, 0));
     // STEP 11: Restrict camera from going below the ground
-    camera.upperBetaLimit = Math.PI / 2 - 0.05;
-    camera.attachControl(canvas, true);
+    
 
 
     /* LIGHTING
@@ -24,54 +23,49 @@ const createScene = async function() {
     light1.intensity = 0.6;
 
     // STEP 8a: Let's create some shadows...create a new DirectionalLight
-    const light2 = new BABYLON.DirectionalLight("directional", new BABYLON.Vector3(0, -1, 1), scene);
+    
     // STEP 8b: Position the light
-    light2.position = new BABYLON.Vector3(0, 50, -100);
+    
     // STEP 8c: Create a ShadowGenerator object, and attach it to the light
-    const shadowGenerator = new BABYLON.ShadowGenerator(1024, light2);
+    
 
     // STEP 10: Soften the edges of the shadows a bit
-    shadowGenerator.usePoissonSampling = true;
+    
 
 
     /* GROUND
     ---------------------------------------------------------------------------------------------------- */
     // STEP 6a: Comment out the below code for the simple square ground
-    // const ground = BABYLON.MeshBuilder.CreateGround("ground", {
-    //     width: 10,
-    //     height: 10
-    // });
-    // const groundMat = new BABYLON.StandardMaterial("groundMat");
-    // groundMat.diffuseColor = new BABYLON.Color3(0.33, 0.42, 0.18);
-    // ground.material = groundMat;
+    const ground = BABYLON.MeshBuilder.CreateGround("ground", {
+        width: 10,
+        height: 10
+    });
+    const groundMat = new BABYLON.StandardMaterial("groundMat");
+    groundMat.diffuseColor = new BABYLON.Color3(0.33, 0.42, 0.18);
+    ground.material = groundMat;
 
     // STEP 6b: Create large ground texture material using Babylon.js library (https://assets.babylonjs.com/environments/valleygrass.png)
-    const largeGroundMat = new BABYLON.StandardMaterial("largeGroundMat");
-    largeGroundMat.diffuseTexture = new BABYLON.Texture("https://assets.babylonjs.com/environments/valleygrass.png");
+    
     // STEP 6c: Build a 3D ground surface based on a heightmap (https://assets.babylonjs.com/environments/villageheightmap.png)
-    const largeGround = BABYLON.MeshBuilder.CreateGroundFromHeightMap("largeGround", "https://assets.babylonjs.com/environments/villageheightmap.png", {width:150, height:150, subdivisions: 20, minHeight:0, maxHeight: 10});
+    
     // STEP 6d: Set the largeGround material property to be the largeGroundMat we created above
-    largeGround.material = largeGroundMat;
+    
     
     // STEP 8d: Instruct the ground mesh to receive shadows
-    largeGround.receiveShadows = true;
+    
 
 
     /* SKY
     ---------------------------------------------------------------------------------------------------- */
-    // STEP 7a: Add a skybox (https://playground.babylonjs.com/#UU7RQ#91)
-    const skybox = BABYLON.MeshBuilder.CreateBox("skyBox", {size:150}, scene);
-    const skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
-    skyboxMaterial.backFaceCulling = false;
+    // STEP 7a: Add a skybox (see https://playground.babylonjs.com/#UU7RQ#91 to visualize how this works)
+    
     // STEP 7b: Apply the 6 images onto the skybox cube (look at the /textures/ directory)
-    skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("./textures/skybox", scene);
+    
     // Thanks to Chad Wolfe's skybox bitmaps at https://opengameart.org/content/sky-box-sunny-day
     // STEP 7c: Make the skybox non-reflective
-    skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
-    skyboxMaterial.diffuseColor = new BABYLON.Color3(0, 0, 0);
-    skyboxMaterial.specularColor = new BABYLON.Color3(0, 0, 0);
+    
     // STEP 7d: Set the skybox material property
-    skybox.material = skyboxMaterial;
+    
 
 
     /* HOUSES
@@ -109,24 +103,21 @@ const createScene = async function() {
     // Combine the box and the roof meshes into one mesh. Note the MergeMeshes method below includes arguments to allow multiple materials within the same mesh
     const house1 = BABYLON.Mesh.MergeMeshes([box, roof], true, false, null, false, true);
     // STEP 9e: Notice the tree is not casting a shadow on the house? Set each of the three houses to cast and recieve shadows, too
-    shadowGenerator.addShadowCaster(house1, true);
-    house1.receiveShadows = true;
+    
 
     // HOUSE 2
     let house2 = house1.createInstance("house2");
     house2.position = new BABYLON.Vector3(0, 0, -4);
     house2.rotation.y = BABYLON.Tools.ToRadians(45);
     // STEP 9f: Set house2 to cast and receive shadows
-    shadowGenerator.addShadowCaster(house2, true);
-    house2.receiveShadows = true;
+    
 
     // HOUSE 3
     let house3 = house1.createInstance("house3");
     house3.position = new BABYLON.Vector3(-3, 0, 1.0);
     house3.rotation.y = BABYLON.Tools.ToRadians(-45);
     // STEP 9g: Set house3 to cast and receive shadows
-    shadowGenerator.addShadowCaster(house3, true);
-    house3.receiveShadows = true;
+    
 
 
     /* SOUNDS
@@ -148,8 +139,7 @@ const createScene = async function() {
         // Scale up the tree - it is way too small
         treeMesh.scaling = new BABYLON.Vector3(150, 150, 150);
         // STEP 9a: Set the tree mesh to cast a shadow (true means apply to child meshes as well), and also to receive shadows
-        shadowGenerator.addShadowCaster(treeMesh, true);
-        treeMesh.receiveShadows = true;
+        
     });
 
 
@@ -161,8 +151,7 @@ const createScene = async function() {
     carMat.diffuseColor = new BABYLON.Color3(1, 0, 1);
     car.material = carMat;
     // STEP 9b: Add a shadow to the car, and set it to receive shadows cast upon it
-    shadowGenerator.addShadowCaster(car, true);
-    car.receiveShadows = true;
+    
 
     // Move car up 0.5 so that it sits on the ground
     car.position = new BABYLON.Vector3(1, 0.5, -0.75);
@@ -177,8 +166,7 @@ const createScene = async function() {
         wheelMesh.parent = car;
         wheelMesh.position = new BABYLON.Vector3(0, -0.4, -0.6);
         // STEP 9c: Add a shadow to the wheel, and enable receiveShadows
-        shadowGenerator.addShadowCaster(wheelMesh, true);
-        wheelMesh.receiveShadows = true;
+        
     }).catch((error) => {
         console.log("Error loading mesh: " + error);
         return null;
@@ -193,8 +181,7 @@ const createScene = async function() {
         wheelMesh.parent = car;
         wheelMesh.position = new BABYLON.Vector3(0, -0.4, 0.6);
         // STEP 9d: Add a shadow to the wheel, and enable receiveShadows
-        shadowGenerator.addShadowCaster(wheelMesh, true);
-        wheelMesh.receiveShadows = true;
+        
     }).catch((error) => {
         console.log("Error loading mesh: " + error);
         return null;
@@ -207,48 +194,38 @@ const createScene = async function() {
     /* ANIMATION
     ---------------------------------------------------------------------------------------------------- */
     // STEP 1: Create a new animation object (at 30 FPS)
-    const animCar = new BABYLON.Animation("carAnimation", "position.x", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+    
 
     // STEP 2a: Create an array for keyframes
-    const carKeys = []; 
+    
     // STEP 2b: Add the first keyframe - at key 0, the value of position.x is -3
-    carKeys.push({
-        frame: 0,
-        value: -3
-    });
+    
     // STEP 2c: at animation key 60, (after 2 seconds since animation FPS = 30) the value of position.x is 3
-    carKeys.push({
-        frame: 60,
-        value: 3
-    });
+    
     // STEP 2d: At animation key 120, the value of position.x is -3 again
-    carKeys.push({
-        frame: 120,
-        value: -3
-    });
+    
 
     // STEP 3: Attach the animation keys to the animation object
-    animCar.setKeys(carKeys);
+    
 
     // STEP 4: Add the animation object to the car's animations array
-    car.animations = [];
-    car.animations.push(animCar);
+    
 
     // STEP 5: Attach the animation to the scene
-    scene.beginAnimation(car, 0, 120, true);
+    
 
     /* ENABLE IMMERSIVE VR
     ---------------------------------------------------------------------------------------------------- */
     // STEP 12: Enable the WebXR experience, and walk around your scene using the provided VR headset
     // Check to see if WebXR (immersive-vr, specifically) is supported on this device
-    if (BABYLON.WebXRSessionManager.IsSessionSupportedAsync("immersive-vr")) {
-        const xr = await scene.createDefaultXRExperienceAsync({
-            floorMeshes: [largeGround],
-            optionalFeatures: true
-        });
-    } else {
-        console.log("WebXR is not supported on this device.");
-    };
+    // if (BABYLON.WebXRSessionManager.IsSessionSupportedAsync("immersive-vr")) {
+    //     const xr = await scene.createDefaultXRExperienceAsync({
+    //         floorMeshes: [largeGround],
+    //         optionalFeatures: true
+    //     });
+    // } else {
+    //     console.log("WebXR is not supported on this device.");
+    // };
 
     // Return the scene
     return scene;
