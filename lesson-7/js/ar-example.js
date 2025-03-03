@@ -70,18 +70,26 @@ const createScene = async function() {
     /* HIT-TEST
     ---------------------------------------------------------------------------------------------------- */
     // STEP 5: A hit-test is a standard feature in AR that permits a ray to be cast from the device (headset or phone) into the real world, and detect where it intersects with a real-world object. This enables AR apps to place objects on surfaces or walls of the real world (https://immersive-web.github.io/hit-test/). To enable hit-testing, use the enableFeature() method of the featuresManager from the base WebXR experience helper.
-
+    const hitTest = xr.baseExperience.featuresManager.enableFeature(BABYLON.WebXRHitTest, "latest");
     // STEP 6a: Create a marker to show where a hit-test has registered a surface
-    
+    const marker = BABYLON.MeshBuilder.CreateTorus("marker", {diameter: 0.15, thickness: 0.05}, scene);
+    marker.isVisible = false;
+    marker.rotationQuaternion = new BABYLON.Quaternion();
     // STEP 6b: Create a variable to store the latest hit-test results
-
+    let latestHitTestResults = null;
     // STEP 6c: Add an event listener for the hit-test results
-
-    // STEP 6d: If there is a hit-test result, turn on the marker, and extract the position, rotation, and scaling from the hit-test result
-        
+    hitTest.onHitTestResultObservable.add((results) => {
+        // STEP 6d: If there is a hit-test result, turn on the marker, and extract the position, rotation, and scaling from the hit-test result
+        if (results.length) {
+            marker.isVisible = true;
+            results[0].transformationMatrix.decompose(marker.scaling, marker.rotationQuaternion, marker.position);
+            latestHitTestResults = results;
+        } else {
             // STEP 6e: If there is no hit-test result, turn off the marker and clear the stored results
-    
-
+            marker.isVisible = false;
+            latestHitTestResults = null;
+        };
+    });
 
     /* ANCHORS
     ---------------------------------------------------------------------------------------------------- */
