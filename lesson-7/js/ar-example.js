@@ -58,7 +58,7 @@ const createScene = async function() {
     const xr = await scene.createDefaultXRExperienceAsync({
         uiOptions: {
             sessionMode: "immersive-ar",
-            referenceSpaceType: "bounded-floor"
+            referenceSpaceType: "unbounded"
         },
         // STEP 2b: Enable optional features - either all of them with true (boolean), or as an array
         optionalFeatures: true
