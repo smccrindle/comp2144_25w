@@ -40,8 +40,8 @@ const createScene = async function() {
     boxMat.diffuseColor = new BABYLON.Color3(1, 0.6, 0);
     box.material = boxMat;
     // STEP 4: Move the box so it is not at your feet
-    box.position.y = 1;
-    box.position.z = 2;
+    // box.position.y = 1;
+    // box.position.z = 2;
 
 
     /* SOUNDS
