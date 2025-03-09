@@ -58,14 +58,14 @@ const createScene = async function() {
     const xr = await scene.createDefaultXRExperienceAsync({
         uiOptions: {
             sessionMode: "immersive-ar",
-            referenceSpaceType: "unbounded"
+            referenceSpaceType: "unbounded-floor"
         },
         // STEP 2b: Enable optional features - either all of them with true (boolean), or as an array
         optionalFeatures: true
     });
     // STEP 3: Commit your code and push it to a server, then try it out with a headset - notice how the orange box is right at your feet - 0, 0, 0 is located on the floor at your feet
 
-    // STEP 9: Change the reference space type (in the uiOptions object above) to "local-floor", so the box is placed on the floor, not at your feet, or to "local", so the box is placed in front of you, or "unbounded", so the box is placed anywhere in the world.
+    // STEP 9: There are several types of reference spaces: viewer, local, local-floor, bounded-floor, and unbounded (https://developer.mozilla.org/en-US/docs/Web/API/XRReferenceSpace) - try them all by adding referenceSpaceType: "" above after the sessionMode above in STEP 2a.
 
 
     /* HIT-TEST
