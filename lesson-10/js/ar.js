@@ -39,8 +39,8 @@ const createScene = async function() {
     boxMat.diffuseColor = new BABYLON.Color3(1, 0.6, 0);
     box.material = boxMat;
     // The initial position of the box is 0, 0, 0 so with the referenceSpaceType: "unbounded" it will be located on the viewer's head, which is the origin point of the scene - reposition the box as you'd like
-    // box.position.y = 0.5;
-    // box.position.z = 0.5;
+    box.position.y = 0.5;
+    box.position.z = 0.5;
 
     // STEP 7: Let's create another native mesh object for interactive purposes
     
@@ -71,15 +71,20 @@ const createScene = async function() {
     /* INTERACTION
     ---------------------------------------------------------------------------------------------------- */
     // STEP 2: Add an action manager to the box mesh
-    
+    box.actionManager = new BABYLON.ActionManager(scene);
 
     // STEP 3a: Set up a "mouseover" effect - register a new action with the registerAction() method
-    
+    box.actionManager.registerAction(
         // STEP 3b: Set up the action to animate the effect with InterpolateValueAction
-        
+        new BABYLON.InterpolateValueAction(
             // STEP 3c: Add a hover action with OnPointerOverTrigger, to scale the box 1.2 times its size over a quarter of a second
-
-    
+            BABYLON.ActionManager.OnPointerOverTrigger,
+            box,
+            "scaling",
+            new BABYLON.Vector3(1.2, 1.2, 1.2),
+            250
+        )
+    );
     // STEP 4a: Set up a "mouseout" effect - register another action with the registerAction() method
     
         // STEP 4b: Set up the action to animate the effect once again with InterpolateValueAction
