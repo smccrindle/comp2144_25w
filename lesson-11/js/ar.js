@@ -120,37 +120,45 @@ const createScene = async function() {
     /* SLIDER ELEMENT */
 
     // STEP 8a: Create another plane mesh that we will use to apply a slider control
-    
+    const plane3 = BABYLON.Mesh.CreatePlane("plane3", 1);
     // STEP 8b: Set plane3 to be a child of the torus, and position it Z at -1.5 so it is not in the middle of the mesh
-    
+    plane3.parent = torus;
+    plane3.position.z = 1.5;
     // STEP 8c: Billboard mode for this plane should be back to Y axis only (or X or Z if you'd like)
-    
+    plane3.billboardMode = BABYLON.Mesh.BILLBOARDMODE_Y;
 
     // STEP 9: Make a third texture upon which the slider control will be rendered on plane3
-    
+    const advancedTexture3 = BABYLON.GUI.AdvancedDynamicTexture.CreateForMesh(plane3);
 
     // STEP 10a: Let's start with a simple text block to use as a header for the slider UI control element
-    
+    const header = new BABYLON.GUI.TextBlock();
     // STEP 10b: Apply the text content, the height, the color, and bump it up a bit to make room for the next element
-    
+    header.text = "Z-rotation: 0 degrees";
+    header.height = "30px";
+    header.color = "white";
+    header.top = "-50px";
     // STEP 10c: Apply the header to the texture to go on plane3
-     
+    advancedTexture3.addControl(header);
 
     // STEP 11a: Next up is the slider UI control itself
-    
+    const slider = new BABYLON.GUI.Slider();
     // STEP 11b: Configure the minimum and maximum values for the slider, and the initial value
-    
+    slider.minimum = 0;
+    slider.maximum = 360;
+    slider.value = 0;
     // STEP 11c: Set the height and width, then bump the element down a bit so it doesn't collide with the above header
-    
+    slider.height = "20px";
+    slider.width = "200px";
+    slider.top = "20px";
     // STEP 12a: Build an event handler for the slider, that passes in the value to an anonymous function
-    
+    slider.onValueChangedObservable.add(function(value) {
         // STEP 12b: Update the header UI element text with the degrees of rotation of the torus
-        
+        header.text = `Z-rotation: ${BABYLON.Tools.ToDegrees(value) | 0} degrees`;
         // STEP 12c: Update the rotation.z value of the torus mesh itself
-        
-    
+        torus.rotation.z = value;
+    });
     // STEP 13: Apply the slider to the texture being applied to plane 3, then try it out in the headset (you may need to walk around the torus to get to the slider control)
-    
+    advancedTexture3.addControl(slider);
 
 
     /* OTHER FUNCTIONS
