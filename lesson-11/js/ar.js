@@ -144,7 +144,7 @@ const createScene = async function() {
     const slider = new BABYLON.GUI.Slider();
     // STEP 11b: Configure the minimum and maximum values for the slider, and the initial value
     slider.minimum = 0;
-    slider.maximum = 360;
+    slider.maximum = 2 * Math.PI;
     slider.value = 0;
     // STEP 11c: Set the height and width, then bump the element down a bit so it doesn't collide with the above header
     slider.height = "20px";
