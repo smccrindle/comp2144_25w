@@ -91,23 +91,29 @@ const createScene = async function() {
     /* BUTTON ELEMENT */
 
     // STEP 5a: Create a simple button to identify and control the cylinder, beginning with another plane mesh
-    
+    const plane2 = BABYLON.Mesh.CreatePlane("plane2", 1);
     // STEP 5b: Make plane2 a child of the cylinder and position it above it
-    
+    plane2.parent = cylinder;
     // STEP 5c: Set the billboard mode to ALL
-    
+    plane2.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
 
     // STEP 6: Create a new texture for the GUI elements to apply to plane2
-    
+    const advancedTexture2 = BABYLON.GUI.AdvancedDynamicTexture.CreateForMesh(plane2);
 
     // STEP 7a: Make a BABYLON GUI button element, and add some text 
-    
+    const button = BABYLON.GUI.Button.CreateSimpleButton("button", "Change colour");
     // STEP 7b: Set the height, width, color (foreground and background), and the font size
-    
+    button.width = 1;
+    button.height = 0.4;
+    button.color = "white";
+    button.background = "grey";
+    button.fontSize = 50;
     // STEP 7c: Add an event handler, and create an anonymous function to change the color of the mesh (see pre-built function changeMeshColor() below)
-    
+    button.onPointerUpObservable.add(function() {
+        changeMeshColor();
+    });
     // STEP 7d: Apply the button to the texture being applied to plane2, then try this GUI element in the headset
-    
+    advancedTexture2.addControl(button);
 
 
     /* SLIDER ELEMENT */
