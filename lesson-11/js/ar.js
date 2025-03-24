@@ -94,6 +94,7 @@ const createScene = async function() {
     const plane2 = BABYLON.Mesh.CreatePlane("plane2", 1);
     // STEP 5b: Make plane2 a child of the cylinder and position it above it
     plane2.parent = cylinder;
+    plane2.position.y = 2;
     // STEP 5c: Set the billboard mode to ALL
     plane2.billboardMode = BABYLON.Mesh.BILLBOARDMODE_ALL;
 
