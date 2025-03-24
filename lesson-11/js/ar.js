@@ -58,28 +58,34 @@ const createScene = async function() {
     /* TEXTBLOCK AND RECTANGLE ELEMENT */
 
     // STEP 1a: Create a simple plane for a rectangle label for the pyramid
-    
+    const plane1 = BABYLON.Mesh.CreatePlane("plane1", 1);
     // STEP 1b: Set the pyramid as the parent
-    
+    plane1.parent = pyramid;
     // STEP 1c: Position it up above the pyramid
-    
+    plane1.position.y = 1.5;
     // STEP 1d: Set the billboardMode so that it faces the viewer wherever they go
-    
+    plane1.billboardMode = BABYLON.Mesh.BILLBOARDMODE_Y;
 
     // STEP 2: With GUI controls in 3D, we apply them to a mesh with a texture
-    
+    const advancedTexture1 = BABYLON.GUI.AdvancedDynamicTexture.CreateForMesh(plane1);
     
     // STEP 3a: Build out a BABYLON GUI Rectangle
-    
+    const rectangle = new BABYLON.GUI.Rectangle();
     // STEP 3b: Set the height, width, cornerRadius, color (foreground and background), and thickness
-    
+    rectangle.width = 0.4;
+    rectangle.height = "80px";
+    rectangle.cornerRadius = 40;
+    rectangle.color = "orange";
+    rectangle.thickness = 4;
+    rectangle.background = "green";
     // STEP 3c: Apply the rectangle GUI element to the texture being applied to plane1
-    
+    advancedTexture1.addControl(rectangle);
     
     // STEP 4a: Add a label to the rectangle with TextBlock and set the text
-    
+    const label = new BABYLON.GUI.TextBlock();
+    label.text = "Pyramid";
     // STEP 4b: Attach the label to the above rectangle GUI element, and test it out with the headset
-    
+    rectangle.addControl(label);
 
 
     /* BUTTON ELEMENT */
