@@ -21,7 +21,7 @@ const createScene = async function() {
     });
     // STEP 9: Colour the ground
     const groundMat = new BABYLON.StandardMaterial("groundMat");
-    groundMat.diffuseColor = new BABYLON.Color3(0.33, 0.42, 0.18);
+    groundMat.diffuseColor = new BABYLON.Color3(1, 0, 0);
     ground.material = groundMat;
 
     // STEP 12b: Add an array to position the image properly on each of the four visible sides (notice we will not set 4 and 5)
