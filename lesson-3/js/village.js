@@ -82,12 +82,13 @@ const createScene = async function() {
         const audioEngine = await BABYLON.CreateAudioEngineAsync();
         await audioEngine.unlockAsync();
         // Audio engine is ready to play sounds ...
+        BABYLON.CreateStreamingSoundAsync("birds", "./media/chirping-birds-ambience-217410.mp3", {
+            loop: true, 
+            autoplay: true
+        }, audioEngine);
     }
 
-    BABYLON.CreateStreamingSoundAsync("birds", "./media/chirping-birds-ambience-217410.mp3", {
-        loop: true, 
-        autoplay: true
-    }, audioEngine);
+    initAudio();    
 
     // const sound = new BABYLON.Sound("birds", "./media/chirping-birds-ambience-217410.mp3", scene, null, {
     //     loop: true,
