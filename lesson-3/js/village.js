@@ -78,10 +78,21 @@ const createScene = async function() {
     // STEP 14b: How about a third house?
 
     // STEP 4: Add some ambient sounds ("Chirping Birds Ambience" by Alex from Pixabay - https://pixabay.com/sound-effects/search/birds%20chirping/)
-    const sound = new BABYLON.Sound("birds", "./media/chirping-birds-ambience-217410.mp3", scene, null, {
-        loop: true,
+    async function initAudio() {
+        const audioEngine = await BABYLON.CreateAudioEngineAsync();
+        await audioEngine.unlockAsync();
+        // Audio engine is ready to play sounds ...
+    }
+
+    BABYLON.CreateStreamingSoundAsync("birds", "./media/chirping-birds-ambience-217410.mp3", {
+        loop: true, 
         autoplay: true
-    });
+    }, audioEngine);
+
+    // const sound = new BABYLON.Sound("birds", "./media/chirping-birds-ambience-217410.mp3", scene, null, {
+    //     loop: true,
+    //     autoplay: true
+    // });
     
     // STEP 15a: Let's go get a 3D model of a tree (https://free3d.com/3d-model/low_poly_tree-816203.html by kipris)
     // STEP 15b: Unzip the archive, then look at all the file formats - we will use the popular .obj file format and attempt to convert it to a .glb file using Convert3D (https://convert3d.org/)
