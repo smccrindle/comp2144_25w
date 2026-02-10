@@ -196,20 +196,29 @@ const createScene = async function() {
     shadowGenerator.addShadowCaster(wheel1, true);
 
     // Add a second wheel (also from TinkerCAD)
-    const wheel2 = BABYLON.SceneLoader.ImportMeshAsync("", "./meshes/", "wheel2.glb").then((result) => {
-        const wheelMesh = result.meshes[0];
-        const wheelBounds = result.meshes[1];
-        // wheelBounds.showBoundingBox = true;
-        wheelMesh.scaling = new BABYLON.Vector3(0.1, 0.1, 0.1);
-        wheelMesh.parent = car;
-        wheelMesh.position = new BABYLON.Vector3(0, -0.4, 0.6);
-        // STEP 9d: Add a shadow to the wheel, and enable receiveShadows
-        shadowGenerator.addShadowCaster(wheelMesh, true);
-        wheelMesh.receiveShadows = true;
-    }).catch((error) => {
-        console.log("Error loading mesh: " + error);
-        return null;
-    });
+    // const wheel2 = BABYLON.SceneLoader.ImportMeshAsync("", "./meshes/", "wheel2.glb").then((result) => {
+    //     const wheelMesh = result.meshes[0];
+    //     const wheelBounds = result.meshes[1];
+    //     // wheelBounds.showBoundingBox = true;
+    //     wheelMesh.scaling = new BABYLON.Vector3(0.1, 0.1, 0.1);
+    //     wheelMesh.parent = car;
+    //     wheelMesh.position = new BABYLON.Vector3(0, -0.4, 0.6);
+    //     // STEP 9d: Add a shadow to the wheel, and enable receiveShadows
+    //     shadowGenerator.addShadowCaster(wheelMesh, true);
+    //     wheelMesh.receiveShadows = true;
+    // }).catch((error) => {
+    //     console.log("Error loading mesh: " + error);
+    //     return null;
+    // });
+
+    // Trying await to see if I can animate the wheel later
+    // Load Wheel 2
+    const wheel2Result = await BABYLON.SceneLoader.ImportMeshAsync("", "./meshes/", "wheel2.glb");
+    const wheel2 = wheel2Result.meshes[0];
+    wheel2.parent = car;
+    wheel2.position = new BABYLON.Vector3(0, -0.4, 0.6);
+    wheel2.scaling = new BABYLON.Vector3(0.1, 0.1, 0.1);
+    shadowGenerator.addShadowCaster(wheel2, true);
 
     // The car's wheels are stuck in the ground - we need to lift the car up so that it sits on the ground
     car.position.y = 0.6;
