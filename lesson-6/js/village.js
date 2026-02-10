@@ -261,7 +261,7 @@ const createScene = async function() {
 
     /* WHEEL ANIMATION */
     // Create rotation animation (30 FPS)
-    const animWheel = new BABYLON.Animation("wheelAnimation", "rotation.y", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+    const animWheel = new BABYLON.Animation("wheelAnimation", "rotation.z", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
 
     const wheelKeys = [];
     // At frame 0, rotation is 0
