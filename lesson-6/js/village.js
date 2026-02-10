@@ -171,58 +171,59 @@ const createScene = async function() {
     // Move it out of the way so that the 0,0,0 point in the scene is visible for the next mesh we will import
 
     // Drop a wheel (built into TinkerCAD) into the scene using the ImportMeshAsync method
-    // const wheel1 = BABYLON.SceneLoader.ImportMeshAsync("", "./meshes/", "wheel1.glb").then((result) => {
-    //     const wheelMesh = result.meshes[0];
-    //     const wheelBounds = result.meshes[1];
-    //     // wheelBounds.showBoundingBox = true;
-    //     wheelMesh.scaling = new BABYLON.Vector3(0.1, 0.1, 0.1);
-    //     wheelMesh.parent = car;
-    //     wheelMesh.position = new BABYLON.Vector3(0, -0.4, -0.6);
-    //     // STEP 9c: Add a shadow to the wheel, and enable receiveShadows
-    //     shadowGenerator.addShadowCaster(wheelMesh, true);
-    //     wheelMesh.receiveShadows = true;
-    // }).catch((error) => {
-    //     console.log("Error loading mesh: " + error);
-    //     return null;
-    // });    
+    const wheel1 = BABYLON.SceneLoader.ImportMeshAsync("", "./meshes/", "wheel1.glb").then((result) => {
+        const wheelMesh = result.meshes[0];
+        const wheelBounds = result.meshes[1];
+        // wheelBounds.showBoundingBox = true;
+        wheelMesh.scaling = new BABYLON.Vector3(0.1, 0.1, 0.1);
+        wheelMesh.parent = car;
+        wheelMesh.position = new BABYLON.Vector3(0, -0.4, -0.6);
+        // STEP 9c: Add a shadow to the wheel, and enable receiveShadows
+        shadowGenerator.addShadowCaster(wheelMesh, true);
+        wheelMesh.receiveShadows = true;
+    }).catch((error) => {
+        console.log("Error loading mesh: " + error);
+        return null;
+    });    
 
     // Trying await to see if I can animate the wheel later
     // Load Wheel 1
-    const wheel1Result = await BABYLON.SceneLoader.ImportMeshAsync("", "./meshes/", "wheel1.glb");
-    // Target meshes[1] (the actual wheel) instead of the root __root__
-    const wheel1 = wheel1Result.meshes[1]; 
-    wheel1.parent = car;
-    wheel1.rotationQuaternion = null; // IMPORTANT: Allow .rotation.z to work
-    wheel1.position = new BABYLON.Vector3(0, -0.4, -0.6);
-    wheel1.scaling = new BABYLON.Vector3(0.1, 0.1, 0.1);
-    shadowGenerator.addShadowCaster(wheel1, true);
+    // const wheel1Result = await BABYLON.SceneLoader.ImportMeshAsync("", "./meshes/", "wheel1.glb");
+    // // Target meshes[1] (the actual wheel) instead of the root __root__
+    // const wheel1 = wheel1Result.meshes[1]; 
+    // wheel1.parent = car;
+    // wheel1.rotationQuaternion = null; // IMPORTANT: Allow .rotation.z to work
+    // wheel1.position = new BABYLON.Vector3(0, -0.4, -0.6);
+    // wheel1.scaling = new BABYLON.Vector3(0.1, 0.1, 0.1);
+    // wheel1.rotation.x = BABYLON.Tools.ToRadians(90);
+    // shadowGenerator.addShadowCaster(wheel1, true);
 
     // Add a second wheel (also from TinkerCAD)
-    // const wheel2 = BABYLON.SceneLoader.ImportMeshAsync("", "./meshes/", "wheel2.glb").then((result) => {
-    //     const wheelMesh = result.meshes[0];
-    //     const wheelBounds = result.meshes[1];
-    //     // wheelBounds.showBoundingBox = true;
-    //     wheelMesh.scaling = new BABYLON.Vector3(0.1, 0.1, 0.1);
-    //     wheelMesh.parent = car;
-    //     wheelMesh.position = new BABYLON.Vector3(0, -0.4, 0.6);
-    //     // STEP 9d: Add a shadow to the wheel, and enable receiveShadows
-    //     shadowGenerator.addShadowCaster(wheelMesh, true);
-    //     wheelMesh.receiveShadows = true;
-    // }).catch((error) => {
-    //     console.log("Error loading mesh: " + error);
-    //     return null;
-    // });
+    const wheel2 = BABYLON.SceneLoader.ImportMeshAsync("", "./meshes/", "wheel2.glb").then((result) => {
+        const wheelMesh = result.meshes[0];
+        const wheelBounds = result.meshes[1];
+        // wheelBounds.showBoundingBox = true;
+        wheelMesh.scaling = new BABYLON.Vector3(0.1, 0.1, 0.1);
+        wheelMesh.parent = car;
+        wheelMesh.position = new BABYLON.Vector3(0, -0.4, 0.6);
+        // STEP 9d: Add a shadow to the wheel, and enable receiveShadows
+        shadowGenerator.addShadowCaster(wheelMesh, true);
+        wheelMesh.receiveShadows = true;
+    }).catch((error) => {
+        console.log("Error loading mesh: " + error);
+        return null;
+    });
 
     // Trying await to see if I can animate the wheel later
     // Load Wheel 2
-    const wheel2Result = await BABYLON.SceneLoader.ImportMeshAsync("", "./meshes/", "wheel2.glb");
-    const wheel2 = wheel2Result.meshes[1]; 
-    wheel2.parent = car;
-    wheel2.rotationQuaternion = null; // IMPORTANT: Allow .rotation.z to work
-    wheel2.position = new BABYLON.Vector3(0, -0.4, 0.6);
-    wheel2.scaling = new BABYLON.Vector3(0.1, 0.1, 0.1);
-    wheel2.rotation.x = BABYLON.Tools.ToRadians(90);
-    shadowGenerator.addShadowCaster(wheel2, true);
+    // const wheel2Result = await BABYLON.SceneLoader.ImportMeshAsync("", "./meshes/", "wheel2.glb");
+    // const wheel2 = wheel2Result.meshes[1]; 
+    // wheel2.parent = car;
+    // wheel2.rotationQuaternion = null; // IMPORTANT: Allow .rotation.z to work
+    // wheel2.position = new BABYLON.Vector3(0, -0.4, 0.6);
+    // wheel2.scaling = new BABYLON.Vector3(0.1, 0.1, 0.1);
+    // wheel2.rotation.x = BABYLON.Tools.ToRadians(90);
+    // shadowGenerator.addShadowCaster(wheel2, true);
 
     // The car's wheels are stuck in the ground - we need to lift the car up so that it sits on the ground
     car.position.y = 0.6;
@@ -259,41 +260,41 @@ const createScene = async function() {
     // STEP 5: Attach the animation to the scene
     scene.beginAnimation(car, 0, 120, true);
 
-    /* WHEEL ANIMATION */
-    // Create rotation animation (30 FPS)
-    const animWheel = new BABYLON.Animation("wheelAnimation", "rotation.z", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+    // /* WHEEL ANIMATION */
+    // // Create rotation animation (30 FPS)
+    // const animWheel = new BABYLON.Animation("wheelAnimation", "rotation.y", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
 
-    const wheelKeys = [];
-    // At frame 0, rotation is 0
-    wheelKeys.push({ frame: 0, value: 0 });
-    // At frame 60 (end of forward trip), rotate 2*PI (one full circle or more)
-    // Note: Use a negative value if the wheels spin backwards!
-    wheelKeys.push({ frame: 60, value: Math.PI * 4 }); 
-    // At frame 120 (back to start), return to 0
-    wheelKeys.push({ frame: 120, value: 0 });
+    // const wheelKeys = [];
+    // // At frame 0, rotation is 0
+    // wheelKeys.push({ frame: 0, value: 0 });
+    // // At frame 60 (end of forward trip), rotate 2*PI (one full circle or more)
+    // // Note: Use a negative value if the wheels spin backwards!
+    // wheelKeys.push({ frame: 60, value: Math.PI * 4 }); 
+    // // At frame 120 (back to start), return to 0
+    // wheelKeys.push({ frame: 120, value: 0 });
 
-    animWheel.setKeys(wheelKeys);
+    // animWheel.setKeys(wheelKeys);
 
-    // Link animations to both wheels
-    wheel1.animations = [animWheel];
-    wheel2.animations = [animWheel];
+    // // Link animations to both wheels
+    // wheel1.animations = [animWheel];
+    // // wheel2.animations = [animWheel];
 
-    // Start the wheel animations along with the car
-    scene.beginAnimation(wheel1, 0, 120, true);
-    scene.beginAnimation(wheel2, 0, 120, true);
+    // // Start the wheel animations along with the car
+    // scene.beginAnimation(wheel1, 0, 120, true);
+    // scene.beginAnimation(wheel2, 0, 120, true);
 
     /* ENABLE IMMERSIVE VR
     ---------------------------------------------------------------------------------------------------- */
     // STEP 12: Enable the WebXR experience, and walk around your scene using the provided VR headset
     // Check to see if WebXR (immersive-vr, specifically) is supported on this device
-    if (BABYLON.WebXRSessionManager.IsSessionSupportedAsync("immersive-vr")) {
-        const xr = await scene.createDefaultXRExperienceAsync({
-            floorMeshes: [largeGround],
-            optionalFeatures: true
-        });
-    } else {
-        console.log("WebXR is not supported on this device.");
-    };
+    // if (BABYLON.WebXRSessionManager.IsSessionSupportedAsync("immersive-vr")) {
+    //     const xr = await scene.createDefaultXRExperienceAsync({
+    //         floorMeshes: [largeGround],
+    //         optionalFeatures: true
+    //     });
+    // } else {
+    //     console.log("WebXR is not supported on this device.");
+    // };
 
     // Return the scene
     return scene;
