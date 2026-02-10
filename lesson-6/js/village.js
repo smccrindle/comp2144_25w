@@ -189,8 +189,10 @@ const createScene = async function() {
     // Trying await to see if I can animate the wheel later
     // Load Wheel 1
     const wheel1Result = await BABYLON.SceneLoader.ImportMeshAsync("", "./meshes/", "wheel1.glb");
-    const wheel1 = wheel1Result.meshes[0];
+    // Target meshes[1] (the actual wheel) instead of the root __root__
+    const wheel1 = wheel1Result.meshes[1]; 
     wheel1.parent = car;
+    wheel1.rotationQuaternion = null; // IMPORTANT: Allow .rotation.z to work
     wheel1.position = new BABYLON.Vector3(0, -0.4, -0.6);
     wheel1.scaling = new BABYLON.Vector3(0.1, 0.1, 0.1);
     shadowGenerator.addShadowCaster(wheel1, true);
@@ -214,8 +216,9 @@ const createScene = async function() {
     // Trying await to see if I can animate the wheel later
     // Load Wheel 2
     const wheel2Result = await BABYLON.SceneLoader.ImportMeshAsync("", "./meshes/", "wheel2.glb");
-    const wheel2 = wheel2Result.meshes[0];
+    const wheel2 = wheel2Result.meshes[1]; 
     wheel2.parent = car;
+    wheel2.rotationQuaternion = null; // IMPORTANT: Allow .rotation.z to work
     wheel2.position = new BABYLON.Vector3(0, -0.4, 0.6);
     wheel2.scaling = new BABYLON.Vector3(0.1, 0.1, 0.1);
     shadowGenerator.addShadowCaster(wheel2, true);
