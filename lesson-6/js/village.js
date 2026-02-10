@@ -221,6 +221,7 @@ const createScene = async function() {
     wheel2.rotationQuaternion = null; // IMPORTANT: Allow .rotation.z to work
     wheel2.position = new BABYLON.Vector3(0, -0.4, 0.6);
     wheel2.scaling = new BABYLON.Vector3(0.1, 0.1, 0.1);
+    wheel2.rotation.y = BABYLON.Tools.ToRadians(90);
     shadowGenerator.addShadowCaster(wheel2, true);
 
     // The car's wheels are stuck in the ground - we need to lift the car up so that it sits on the ground
@@ -260,7 +261,7 @@ const createScene = async function() {
 
     /* WHEEL ANIMATION */
     // Create rotation animation (30 FPS)
-    const animWheel = new BABYLON.Animation("wheelAnimation", "rotation.y", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+    const animWheel = new BABYLON.Animation("wheelAnimation", "rotation.z", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
 
     const wheelKeys = [];
     // At frame 0, rotation is 0
