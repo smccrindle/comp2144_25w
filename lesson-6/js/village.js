@@ -171,20 +171,29 @@ const createScene = async function() {
     // Move it out of the way so that the 0,0,0 point in the scene is visible for the next mesh we will import
 
     // Drop a wheel (built into TinkerCAD) into the scene using the ImportMeshAsync method
-    const wheel1 = BABYLON.SceneLoader.ImportMeshAsync("", "./meshes/", "wheel1.glb").then((result) => {
-        const wheelMesh = result.meshes[0];
-        const wheelBounds = result.meshes[1];
-        // wheelBounds.showBoundingBox = true;
-        wheelMesh.scaling = new BABYLON.Vector3(0.1, 0.1, 0.1);
-        wheelMesh.parent = car;
-        wheelMesh.position = new BABYLON.Vector3(0, -0.4, -0.6);
-        // STEP 9c: Add a shadow to the wheel, and enable receiveShadows
-        shadowGenerator.addShadowCaster(wheelMesh, true);
-        wheelMesh.receiveShadows = true;
-    }).catch((error) => {
-        console.log("Error loading mesh: " + error);
-        return null;
-    });    
+    // const wheel1 = BABYLON.SceneLoader.ImportMeshAsync("", "./meshes/", "wheel1.glb").then((result) => {
+    //     const wheelMesh = result.meshes[0];
+    //     const wheelBounds = result.meshes[1];
+    //     // wheelBounds.showBoundingBox = true;
+    //     wheelMesh.scaling = new BABYLON.Vector3(0.1, 0.1, 0.1);
+    //     wheelMesh.parent = car;
+    //     wheelMesh.position = new BABYLON.Vector3(0, -0.4, -0.6);
+    //     // STEP 9c: Add a shadow to the wheel, and enable receiveShadows
+    //     shadowGenerator.addShadowCaster(wheelMesh, true);
+    //     wheelMesh.receiveShadows = true;
+    // }).catch((error) => {
+    //     console.log("Error loading mesh: " + error);
+    //     return null;
+    // });    
+
+    // Trying await to see if I can animate the wheel later
+    // Load Wheel 1
+    const wheel1Result = await BABYLON.SceneLoader.ImportMeshAsync("", "./meshes/", "wheel1.glb");
+    const wheel1 = wheel1Result.meshes[0];
+    wheel1.parent = car;
+    wheel1.position = new BABYLON.Vector3(0, -0.4, -0.6);
+    wheel1.scaling = new BABYLON.Vector3(0.1, 0.1, 0.1);
+    shadowGenerator.addShadowCaster(wheel1, true);
 
     // Add a second wheel (also from TinkerCAD)
     const wheel2 = BABYLON.SceneLoader.ImportMeshAsync("", "./meshes/", "wheel2.glb").then((result) => {
@@ -236,6 +245,29 @@ const createScene = async function() {
     car.animations.push(animCar);
     // STEP 5: Attach the animation to the scene
     scene.beginAnimation(car, 0, 120, true);
+
+    /* WHEEL ANIMATION */
+    // Create rotation animation (30 FPS)
+    const animWheel = new BABYLON.Animation("wheelAnimation", "rotation.z", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+
+    const wheelKeys = [];
+    // At frame 0, rotation is 0
+    wheelKeys.push({ frame: 0, value: 0 });
+    // At frame 60 (end of forward trip), rotate 2*PI (one full circle or more)
+    // Note: Use a negative value if the wheels spin backwards!
+    wheelKeys.push({ frame: 60, value: Math.PI * 4 }); 
+    // At frame 120 (back to start), return to 0
+    wheelKeys.push({ frame: 120, value: 0 });
+
+    animWheel.setKeys(wheelKeys);
+
+    // Link animations to both wheels
+    wheel1.animations = [animWheel];
+    wheel2.animations = [animWheel];
+
+    // Start the wheel animations along with the car
+    scene.beginAnimation(wheel1, 0, 120, true);
+    scene.beginAnimation(wheel2, 0, 120, true);
 
     /* ENABLE IMMERSIVE VR
     ---------------------------------------------------------------------------------------------------- */
