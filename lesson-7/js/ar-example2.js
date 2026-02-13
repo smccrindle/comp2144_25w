@@ -1,7 +1,22 @@
+// Get the canvas element as a const
+const canvas = document.getElementById("renderCanvas");
+// Create the BABYON 3D engine, and attach it to the canvas
+const engine = new BABYLON.Engine(canvas, true);
+// The createScene function
+
 var createScene = async function () {
     const scene = new BABYLON.Scene(engine);
-    const camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 5, -10), scene);
+    /* CAMERA
+    ---------------------------------------------------------------------------------------------------- */
+    // Add a camera and allow it to control the canvas
+    const camera = new BABYLON.ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 2.5, 15, new BABYLON.Vector3(0, 0, 0));
+    camera.attachControl(canvas, true);
+
+
+    /* LIGHTING
+    ---------------------------------------------------------------------------------------------------- */
     const light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
+    light.intensity = 0.7;
 
     // 1. Setup the XR Experience
     const xr = await scene.createDefaultXRExperienceAsync({
