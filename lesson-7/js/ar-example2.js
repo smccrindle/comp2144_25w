@@ -46,6 +46,10 @@ const createScene = async function () {
         if (lastHitTest && marker.isVisible) {
             const anchor = await anchorSystem.addAnchorPointUsingHitTestResultAsync(lastHitTest);
             const box = BABYLON.MeshBuilder.CreateBox("box", { size: 0.1 }, scene);
+            // Move the geometry up by half its height (0.05) 
+            // and "freeze" that as the new zero point.
+            box.position.y = 0.05; 
+            box.bakeCurrentTransformIntoVertices();
             // Glue the box to the real world
             anchor.attachedNode = box;
         }
