@@ -1,29 +1,19 @@
-// Get the canvas element as a const
-const canvas = document.getElementById("renderCanvas");
-// Create the BABYON 3D engine, and attach it to the canvas
-const engine = new BABYLON.Engine(canvas, true);
-// The createScene function
-
-var createScene = async function () {
+const createScene = async function () {
+    // Basic setup
     const scene = new BABYLON.Scene(engine);
-    /* CAMERA
-    ---------------------------------------------------------------------------------------------------- */
-    // Add a camera and allow it to control the canvas
-    const camera = new BABYLON.ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 2.5, 15, new BABYLON.Vector3(0, 0, 0));
+    const camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 5, -10), scene);
+    camera.setTarget(BABYLON.Vector3.Zero());
     camera.attachControl(canvas, true);
 
-
-    /* LIGHTING
-    ---------------------------------------------------------------------------------------------------- */
     const light = new BABYLON.HemisphericLight("light1", new BABYLON.Vector3(0, 1, 0), scene);
     light.intensity = 0.7;
 
-    // 1. Setup the XR Experience
+    // 1. Initialize WebXR
     const xr = await scene.createDefaultXRExperienceAsync({
         uiOptions: {
             sessionMode: "immersive-ar",
         },
-        // IMPORTANT: Must explicitly ask for these for the Quest to allow them
+        // Meta Quest requires these to be explicitly requested
         optionalFeatures: ["hit-test", "anchors"]
     });
 
@@ -31,9 +21,13 @@ var createScene = async function () {
     const hitTest = fm.enableFeature(BABYLON.WebXRHitTest, "latest");
     const anchorSystem = fm.enableFeature(BABYLON.WebXRAnchorSystem, "latest");
 
-    // 2. Create a "Ghost" Marker to show where the hit-test is currently pointing
-    const marker = BABYLON.MeshBuilder.CreateCylinder("marker", { diameter: 0.1, height: 0.01 });
+    // 2. Create a "Ghost" Marker (Reticle)
+    const marker = BABYLON.MeshBuilder.CreateCylinder("marker", { diameter: 0.15, height: 0.01 }, scene);
     marker.isVisible = false;
+    const markerMat = new BABYLON.StandardMaterial("markerMat", scene);
+    markerMat.diffuseColor = new BABYLON.Color3(0, 1, 0);
+    markerMat.alpha = 0.5;
+    marker.material = markerMat;
 
     // 3. Update marker position based on Hit Test
     let lastHitTest;
@@ -47,20 +41,29 @@ var createScene = async function () {
         }
     });
 
-    // 4. On Tap/Click: Create a permanent Anchor and attach a Cube
+    // 4. Anchor a box on click/tap
     scene.onPointerDown = async () => {
         if (lastHitTest && marker.isVisible) {
-            // Create the anchor at the hit test point
             const anchor = await anchorSystem.addAnchorPointUsingHitTestResultAsync(lastHitTest);
-            
-            // Create a simple cube to "stick" to the table
-            const box = BABYLON.MeshBuilder.CreateBox("box", { size: 0.1 });
-            
-            // Link the box to the anchor's transform node
-            // This ensures it stays glued to the real-world coffee table
+            const box = BABYLON.MeshBuilder.CreateBox("box", { size: 0.1 }, scene);
+            // Glue the box to the real world
             anchor.attachedNode = box;
         }
     };
 
     return scene;
 };
+
+// --- ENGINE GLUE CODE ---
+const canvas = document.getElementById("renderCanvas");
+const engine = new BABYLON.Engine(canvas, true);
+
+createScene().then((scene) => {
+    engine.runRenderLoop(function () {
+        scene.render();
+    });
+
+    window.addEventListener("resize", function () {
+        engine.resize();
+    });
+});
