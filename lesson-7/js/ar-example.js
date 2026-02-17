@@ -36,12 +36,14 @@ const createScene = async function() {
     ---------------------------------------------------------------------------------------------------- */
     // STEP 1: Create a simple box, and apply a material and a colour to it.
     const box = BABYLON.MeshBuilder.CreateBox("box", {size: 0.5}, scene);
-    const boxMat = new BABYLON.StandardMaterial("boxMat");
+    const boxMat = new BABYLON.StandardMaterial("boxMat", scene);
     boxMat.diffuseColor = new BABYLON.Color3(1, 0.6, 0);
     box.material = boxMat;
     // STEP 4: Move the box so it is not at your feet
-    // box.position.y = 1;
-    // box.position.z = 2;
+    box.position.x = 1;
+    box.position.z = 2;
+    // STEP 4b: It is embedded in the floor - bring it up 0.25
+    box.position.y = 0.25;
 
 
     /* SOUNDS
@@ -125,8 +127,8 @@ const createScene = async function() {
         box.position.y = 0.05; 
         box.bakeCurrentTransformIntoVertices();
         // Colour the box
-        const boxMat = new BABYLON.StandardMaterial("boxMat");
-        boxMat.diffuseColor = new BABYLON.Color3(getRandomRounded(), getRandomRounded(), getRandomRounded());
+        const boxMat = new BABYLON.StandardMaterial("boxMat", scene);
+        boxMat.diffuseColor = new BABYLON.Color3(Math.random(), Math.random(), Math.random());
         box.material = boxMat;
         return box;
     }
