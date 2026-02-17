@@ -58,10 +58,11 @@ const createScene = async function() {
     const xr = await scene.createDefaultXRExperienceAsync({
         uiOptions: {
             sessionMode: "immersive-ar",
+            // STEP 2b: We need 0, 0, 0 to be a space on the floor, not between your eyes! There are several types of reference spaces: viewer, local, local-floor, bounded-floor, and unbounded (https://developer.mozilla.org/en-US/docs/Web/API/XRReferenceSpace)
             referenceSpaceType: "unbounded-floor"
         },
-        // STEP 2b: Enable optional features - either all of them with true (boolean), or as an array
-        optionalFeatures: true
+        // STEP 2c: Meta Quest requires these to be explicitly requested
+        optionalFeatures: ["hit-test", "anchors"]
     });
     // STEP 3: Commit your code and push it to a server, then try it out with a headset - notice how the orange box is right at your feet - 0, 0, 0 is located on the floor at your feet
 
@@ -71,56 +72,90 @@ const createScene = async function() {
     /* HIT-TEST
     ---------------------------------------------------------------------------------------------------- */
     // STEP 5: A hit-test is a standard feature in AR that permits a ray to be cast from the device (headset or phone) into the real world, and detect where it intersects with a real-world object. This enables AR apps to place objects on surfaces or walls of the real world (https://immersive-web.github.io/hit-test/). To enable hit-testing, use the enableFeature() method of the featuresManager from the base WebXR experience helper.
-    const hitTest = xr.baseExperience.featuresManager.enableFeature(BABYLON.WebXRHitTest, "latest");
+    // STEP 5a: Create the features manager object
+    const fm = xr.baseExperience.featuresManager;
+    // STEP 5b: Enable the hit-test feature
+    const hitTest = fm.enableFeature(BABYLON.WebXRHitTest, "latest");
+
     // STEP 6a: Create a marker to show where a hit-test has registered a surface
-    const marker = BABYLON.MeshBuilder.CreateTorus("marker", {diameter: 0.15, thickness: 0.05}, scene);
+    const marker = BABYLON.MeshBuilder.CreateCylinder("marker", { diameter: 0.15, height: 0.01 }, scene);
     marker.isVisible = false;
-    marker.rotationQuaternion = new BABYLON.Quaternion();
+    const markerMat = new BABYLON.StandardMaterial("markerMat", scene);
+    markerMat.diffuseColor = new BABYLON.Color3(0, 1, 0);
+    markerMat.alpha = 0.5;
+    marker.material = markerMat;
+
     // STEP 6b: Create a variable to store the latest hit-test results
-    let latestHitTestResults = null;
+    let lastHitTest;
     // STEP 6c: Add an event listener for the hit-test results
     hitTest.onHitTestResultObservable.add((results) => {
-        // STEP 6d: If there is a hit-test result, turn on the marker, and extract the position, rotation, and scaling from the hit-test result
+        // STEP 6d: If there is a successful hit-test, then make the marker visible
         if (results.length) {
             marker.isVisible = true;
-            results[0].transformationMatrix.decompose(marker.scaling, marker.rotationQuaternion, marker.position);
-            latestHitTestResults = results;
+            // STEP 6e: Grab the hit-test matrix of coordinates
+            lastHitTest = results[0];
+            // STEP 6f: Extract what we need so that the marker is oriented properly on the detected surface
+            lastHitTest.transformationMatrix.decompose(undefined, marker.rotationQuaternion, marker.position);
         } else {
-            // STEP 6e: If there is no hit-test result, turn off the marker and clear the stored results
             marker.isVisible = false;
-            latestHitTestResults = null;
-        };
+        }
     });
 
     /* ANCHORS
     ---------------------------------------------------------------------------------------------------- */
     // STEP 7: Anchors are a feature that allow you to place objects in the real world space and have them stay there, even if the observer moves around. To enable anchors, use the enableFeature() method of the featuresManager from the base WebXR experience helper (https://immersive-web.github.io/anchors/).
-    const anchors = xr.baseExperience.featuresManager.enableFeature(BABYLON.WebXRAnchorSystem, "latest");
-    // STEP 8a: Add event listener for click (and simulate this in the Immersive Web Emulator)
-    canvas.addEventListener("click", () => {
-        if(latestHitTestResults && latestHitTestResults.length > 0) {
-            // Create an anchor
-            anchors.addAnchorPointUsingHitTestResultAsync(latestHitTestResults[0]).then((anchor) => {
-                // STEP 8b: Attach the box to the anchor
-                anchor.attachedNode = box;
-            }).catch((error) => {
-                console.log(error);
-            });
-        };
-    });
+    // STEP 7a: Enable the anchor feature
+    const anchorSystem = fm.enableFeature(BABYLON.WebXRAnchorSystem, "latest");
+    // STEP 7b: Add event listener for click
+    scene.onPointerDown = async () => {
+        if (lastHitTest && marker.isVisible) {
+            // STEP 7c: Create an anchor point based on the last hit-test coordinates
+            const anchor = await anchorSystem.addAnchorPointUsingHitTestResultAsync(lastHitTest);
+            // STEP 7d: Build a box to drop on the surface
+            const box = buildRandomBox();
+            // STEP 7e: Attach the box to the real world!
+            anchor.attachedNode = box;
+        }
+    };
     
+    // Function to create a randomly-coloured box mesh
+    function buildRandomBox() {
+        const box = BABYLON.MeshBuilder.CreateBox("box", { size: 0.1 }, scene);
+        // Move the box geometry up by half its height (0.05) and "freeze" that as the new zero point so the box is not embedded in the surface
+        box.position.y = 0.05; 
+        box.bakeCurrentTransformIntoVertices();
+        // Colour the box
+        const boxMat = new BABYLON.StandardMaterial("boxMat");
+        boxMat.diffuseColor = new BABYLON.Color3(getRandomRounded(), getRandomRounded(), getRandomRounded());
+        box.material = boxMat;
+        return box;
+    }
+
+    // Function to generate a random number between 0.0 and 1.0 for the random colour
+    function getRandomRounded() {
+        // Generate a random integer between 0 and 1, inclusive
+        const minInt = 0;
+        const maxInt = 1;
+        const randomInt = Math.floor(Math.random() * (maxInt - minInt + 1)) + minInt;
+        // Divide the integer by 10 to get the desired decimal value
+        const randomFloat = randomInt / 10;
+        return randomFloat;
+    }
+
     // Return the scene
     return scene;
 };
 
-// Continually render the scene in an endless loop
-createScene().then((sceneToRender) => {
-    engine.runRenderLoop(() => sceneToRender.render());
+createScene().then((scene) => {
+    // Continually render the scene in an endless loop
+    engine.runRenderLoop(function () {
+        scene.render();
+    });
+    // Event listener that adapts to the user resizing the screen (in the browser view)
+    window.addEventListener("resize", function () {
+        engine.resize();
+    });
 });
 
-// Add an event listener that adapts to the user resizing the screen
-window.addEventListener("resize", function() {
-    engine.resize();
-});
 
 // Thanks to the great documentation at https://doc.babylonjs.com/, some excellent re-factoring of my code by Gemini, and some code writing assistance from CoPilot.
