@@ -80,12 +80,12 @@ const createScene = async function() {
     // STEP 6a: Create a marker to show where a hit-test has registered a surface
     const marker = BABYLON.MeshBuilder.CreateCylinder("marker", { diameter: 0.15, height: 0.01 }, scene);
     // STEP 6aa: Lay the cylinder flat so the "top" faces the floor
-    marker.rotation.x = Math.PI / 2; 
-    marker.bakeCurrentTransformIntoVertices(); 
+    // marker.rotation.x = Math.PI / 2; 
+    // marker.bakeCurrentTransformIntoVertices(); 
 
     // STEP 6aaa: Initialize the Quaternion so the Hit-Test can control it
     marker.rotationQuaternion = new BABYLON.Quaternion();
-    
+
     marker.isVisible = false;
     const markerMat = new BABYLON.StandardMaterial("markerMat", scene);
     markerMat.diffuseColor = new BABYLON.Color3(0, 1, 0);
