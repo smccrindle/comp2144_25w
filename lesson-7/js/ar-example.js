@@ -78,12 +78,9 @@ const createScene = async function() {
     const hitTest = fm.enableFeature(BABYLON.WebXRHitTest, "latest");
 
     // STEP 6a: Create a marker to show where a hit-test has registered a surface
-    const marker = BABYLON.MeshBuilder.CreateCylinder("marker", { diameter: 0.15, height: 0.01 }, scene);
-    // STEP 6aa: Lay the cylinder flat so the "top" faces the floor
-    // marker.rotation.x = Math.PI / 2; 
-    // marker.bakeCurrentTransformIntoVertices(); 
+    const marker = BABYLON.MeshBuilder.CreateCylinder("marker", { diameter: 0.15, height: 0.01 }, scene); 
 
-    // STEP 6aaa: Initialize the Quaternion so the Hit-Test can control it
+    // STEP 6b: Initialize the Quaternion so the Hit-Test can control it
     marker.rotationQuaternion = new BABYLON.Quaternion();
 
     marker.isVisible = false;
@@ -92,16 +89,16 @@ const createScene = async function() {
     markerMat.alpha = 0.5;
     marker.material = markerMat;
 
-    // STEP 6b: Create a variable to store the latest hit-test results
+    // STEP 7a: Create a variable to store the latest hit-test results
     let lastHitTest;
-    // STEP 6c: Add an event listener for the hit-test results
+    // STEP 7b: Add an event listener for the hit-test results
     hitTest.onHitTestResultObservable.add((results) => {
-        // STEP 6d: If there is a successful hit-test, then make the marker visible
+        // STEP 7c: If there is a successful hit-test, then make the marker visible
         if (results.length) {
             marker.isVisible = true;
-            // STEP 6e: Grab the hit-test matrix of coordinates
+            // STEP 7d: Grab the hit-test matrix of coordinates
             lastHitTest = results[0];
-            // STEP 6f: Extract what we need so that the marker is oriented properly on the detected surface
+            // STEP 7e: Extract what we need so that the marker is oriented properly on the detected surface
             lastHitTest.transformationMatrix.decompose(undefined, marker.rotationQuaternion, marker.position);
         } else {
             marker.isVisible = false;
@@ -110,17 +107,17 @@ const createScene = async function() {
 
     /* ANCHORS
     ---------------------------------------------------------------------------------------------------- */
-    // STEP 7: Anchors are a feature that allow you to place objects in the real world space and have them stay there, even if the observer moves around. To enable anchors, use the enableFeature() method of the featuresManager from the base WebXR experience helper (https://immersive-web.github.io/anchors/).
-    // STEP 7a: Enable the anchor feature
+    // STEP 8: Anchors are a feature that allow you to place objects in the real world space and have them stay there, even if the observer moves around. To enable anchors, use the enableFeature() method of the featuresManager from the base WebXR experience helper (https://immersive-web.github.io/anchors/).
+    // STEP 8a: Enable the anchor feature
     const anchorSystem = fm.enableFeature(BABYLON.WebXRAnchorSystem, "latest");
-    // STEP 7b: Add event listener for click
+    // STEP 8b: Add event listener for click
     scene.onPointerDown = async () => {
         if (lastHitTest && marker.isVisible) {
-            // STEP 7c: Create an anchor point based on the last hit-test coordinates
+            // STEP 8c: Create an anchor point based on the last hit-test coordinates
             const anchor = await anchorSystem.addAnchorPointUsingHitTestResultAsync(lastHitTest);
-            // STEP 7d: Build a box to drop on the surface
+            // STEP 8d: Build a box to drop on the surface
             const box = buildRandomBox();
-            // STEP 7e: Attach the box to the real world!
+            // STEP 8e: Attach the box to the real world!
             anchor.attachedNode = box;
         }
     };
