@@ -61,10 +61,10 @@ const createScene = async function() {
     /* PLANE DETECTION
     ---------------------------------------------------------------------------------------------------- */
     // STEP 1: Enable the Plane Detector feature
-    const planeDetector = xr.baseExperience.featuresManager.enableFeature(
-        BABYLON.WebXRFeatureName.PLANE_DETECTOR, 
-        "latest"
-    );
+    const fm = xr.baseExperience.featuresManager;
+
+    // Use the static .Name property of the class itself
+    const planeDetector = fm.enableFeature(BABYLON.WebXRPlaneDetector.Name, "latest");
 
     // STEP 2: Listen for when a new plane is discovered
     planeDetector.onPlaneAddedObservable.add((plane) => {
