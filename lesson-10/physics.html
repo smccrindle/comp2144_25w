@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebXR Plane Detection & Physics</title>
+    <script src="https://cdn.babylonjs.com/babylon.js"></script>
+    <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+    <script src="https://cdn.babylonjs.com/havok/HavokPhysics_v1.1.3.js"></script>
+    
+    <style>
+        body, html { width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden; }
+        #renderCanvas { width: 100%; height: 100%; touch-action: none; }
+    </style>
+</head>
+<body>
+    <canvas id="renderCanvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById("renderCanvas");
+        const engine = new BABYLON.Engine(canvas, true);
+
+        const createScene = async function () {
+            const scene = new BABYLON.Scene(engine);
+
+            // --- PHYSICS INITIALIZATION ---
+            // Wait for Havok WASM to be ready
+            const havokInstance = await HavokPhysics();
+            const hk = new BABYLON.HavokPlugin(true, havokInstance);
+            scene.enablePhysics(new BABYLON.Vector3(0, -9.81, 0), hk);
+
+            // --- BASIC SCENE SETUP ---
+            const camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 1.6, 0), scene);
+            const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
+            light.intensity = 0.7;
+
+            // --- WEBXR SETUP ---
+            const xr = await scene.createDefaultXRExperienceAsync({
+                uiOptions: {
+                    sessionMode: "immersive-ar",
+                    referenceSpaceType: "local-floor"
+                }
+            });
+
+            const featureManager = xr.baseExperience.featuresManager;
+
+            // Enable Plane Detection
+            const planeDetector = featureManager.enableFeature(BABYLON.WebXRFeatureName.PLANE_DETECTOR, "latest");
+
+            // Enable Hand Tracking
+            const handTracking = featureManager.enableFeature(BABYLON.WebXRFeatureName.HAND_TRACKING, "latest", {
+                xrInput: xr.input
+            });
+
+            // --- THE INTERACTIVE CUBE ---
+            const cube = BABYLON.MeshBuilder.CreateBox("rubberCube", { size: 0.1 }, scene);
+            cube.position = new BABYLON.Vector3(0, 1.2, 0.5);
+            
+            const material = new BABYLON.StandardMaterial("cubeMat", scene);
+            material.diffuseColor = new BABYLON.Color3(0.8, 0.2, 0.2); // Rubber Red
+            cube.material = material;
+
+            const aggregate = new BABYLON.PhysicsAggregate(
+                cube, 
+                BABYLON.PhysicsShapeType.BOX, 
+                { mass: 1, restitution: 0.7, friction: 0.5 }, 
+                scene
+            );
+
+            // --- PLANE COLLIDERS ---
+            planeDetector.onPlaneAddedObservable.add((plane) => {
+                const planeMesh = plane.polygonDefinition;
+                planeMesh.isVisible = false; 
+                new BABYLON.PhysicsAggregate(planeMesh, BABYLON.PhysicsShapeType.MESH, { mass: 0 }, scene);
+            });
+
+            // --- GRAB LOGIC ---
+            handTracking.onHandAddedObservable.add((hand) => {
+                hand.onPinchStateChangedObservable.add((pinchInfo) => {
+                    const indexTip = hand.getJointMesh(BABYLON.WebXRHandJoint.INDEX_FINGER_TIP);
+                    if (!indexTip) return;
+
+                    if (pinchInfo.state === BABYLON.WebXRHandPinchedState.PINCHED) {
+                        const distance = BABYLON.Vector3.Distance(indexTip.position, cube.position);
+                        if (distance < 0.15) {
+                            aggregate.body.setMotionType(BABYLON.PhysicsMotionType.KINEMATIC);
+                            cube.setParent(indexTip);
+                        }
+                    } else {
+                        if (cube.parent) {
+                            cube.setParent(null);
+                            aggregate.body.setMotionType(BABYLON.PhysicsMotionType.DYNAMIC);
+                        }
+                    }
+                });
+            });
+
+            return scene;
+        };
+
+        createScene().then((scene) => {
+            engine.runRenderLoop(() => scene.render());
+        });
+
+        window.addEventListener("resize", () => engine.resize());
+    </script>
+</body>
+</html>
